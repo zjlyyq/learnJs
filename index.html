@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试js界面</title>
+</head>
+<body onload="checkCookie()">
+    <p id="p1" onclick="tellMe()">点击吧</p>
+    请根据以下按钮选择时间：<input type="text" id="date"><br>
+    <input type="button" onclick="startTime()" value="获得动态时钟"><br>
+    <div>
+        <input type="button" onclick="getWindowsSize()" value="窗口的大小是：">
+        <p id="windowSize">窗口的大小：</p>
+    </div>
+    <div>
+        <input type="button" onclick="getScreenSize()" value="窗口的大小是：">
+        <p id="screenSize">窗口的大小：</p>
+    </div>
+
+    <button onclick="window.close()">关闭当前窗口</button>
+    <button onclick="window.open('http://www.baidu.com')">open a new window</button>
+    <button onclick="window.close()">关闭当前窗口</button>
+    <button onclick="window.close()">关闭当前窗口</button>
+    <button onclick="show_confirm()">点击跳出确认框</button>
+    <button onclick="show_promote()">点击跳出提示框</button>
+    <button onclick="clearCookie('username')">清除已经保存的所有cookie</button>
+    <div style="background-color: cadetblue">
+        <h1>无穷循环的计时器</h1>
+        <input type="button" onclick="circle_timer()" value="无穷循环的计时器">
+        <input type="text" id="time_on" value="0">
+    </div>
+    <script>
+        //创建用户名cookie
+        function setCookie(c_name,value,expiredays) {
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate()+expiredays);
+            text = ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+            alert(text)
+            //alert(expiredays)
+            document.cookie = c_name + '=' + escape(value) //+ text;
+            //document.cookie = ';ceshi:crshidhsidnisnddnfdnf'
+        }
+        //得到cookie
+        function getCookie(c_name) {
+            if (document.cookie.length > 0){
+                c_start = document.cookie.indexOf(c_name+'=');
+                if (c_start!=-1){
+                    c_start=c_start + c_name.length+1
+                    c_end=document.cookie.indexOf(";",c_start)
+                    if (c_end==-1) c_end=document.cookie.length
+                    return unescape(document.cookie.substring(c_start,c_end))
+                }
+            }
+            return ""
+        }
+        //清除cookie
+        function clearCookie(c_name) {
+            alert(document.cookie.toString())
+            setCookie(c_name,'',-1)
+        }
+        //检查cookie
+        function checkCookie()
+        {
+            username=getCookie('username')
+            if (username!=null && username!="")
+            {
+                expiresday = getCookie('expires')
+                alert('Welcome again '+username+'!' + '\n' + 'Your cookie will expires in '+ expiresday);
+            }
+            else
+            {
+                username=prompt('Please enter your name:',"")
+                if (username!=null && username!="")
+                {
+                    setCookie('username',username,1)    //将cookie的有效时长设置为1天，2018年01月20日20:11:37，看看明天还在不在
+                }
+            }
+        }
+
+        //无穷循环的计时器
+        function circle_timer() {
+            x = document.getElementById('time_on');
+            if(x.value == null){
+                x.value = 1;
+            }else{
+                s = x.value;
+                t = parseInt(s);
+                x.value = t+1;
+            }
+            t = setTimeout('circle_timer()',1000);
+        }
+        //确认框
+        function show_confirm() {
+            var x = confirm('请确认');
+            if (x == true) {
+                alert('你点了确认');
+            }
+            else {
+                alert('你点了取消');
+            }
+        }
+        //提示框
+        function show_promote() {
+            var x = prompt('请输入你的名字','张嘉璐');
+            if (x != null){
+                alert('你好，' + x);
+            }
+        }
+        //测试Navigator对象
+        txt = "<p>Browser CodeName: " + navigator.appCodeName + "</p>";
+        txt+= "<p>Browser Name: " + navigator.appName + "</p>";
+        txt+= "<p>Browser Version: " + navigator.appVersion + "</p>";
+        txt+= "<p>Cookies Enabled: " + navigator.cookieEnabled + "</p>";
+        txt+= "<p>Platform: " + navigator.platform + "</p>";
+        txt+= "<p>User-agent header: " + navigator.userAgent + "</p>";
+        txt+= "<p>User-agent language: " + navigator.systemLanguage + "</p>";
+        document.write(txt);
+        if(window.opera){
+            document.write('<h1>本浏览器是Opera浏览器</h1>');
+        }else {
+            document.write('<h1>本浏览器不是Opera浏览器</h1>');
+        }
+        //测试location对象
+        document.write(location.href);
+        function person(firstname,lastname,age) {
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.age = age;
+        }
+        function tellMe() {
+            //alert('start');
+            persons = new Array;
+            persons[0] = new person('zhang','jialu',22);
+            //alert(persons[0].age+'岁');
+            persons[1] = new person('ye','yingqi',22);
+            persons[2] = new person('shen','jialu',12);
+            text = ''
+            alert(persons)
+            //alert(persons)
+            for(x in persons){
+                //alert(persons[0]);
+            }
+            p1 = document.getElementById('p1');
+
+            p1.innerText = text;
+
+            //p1.innerHTML = '<h1>'+text+'</h1>';
+            arr = new Array(4);
+            arr[0] = 'str0'
+            arr[1] = 'str1'
+            arr[2] = 'str2'
+            arr[3] = 'str3'
+            alert(arr)
+        }
+        //设置动态时钟
+        function startTime() {
+            var time = new Date();
+            var h = time.getHours();
+            var m = time.getMinutes();
+            var s = time.getSeconds();
+
+            var x = document.getElementById('date');
+            x.value = h + ':' + m + ':' + s
+            //refresh 0.5s
+            t = setTimeout('startTime()',500);
+        }
+        //million-answer qa
+        //get window's size by Widows
+        function getWindowsSize() {
+            var w=window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+
+            var h=window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
+            p2 = window.document.getElementById('windowSize');
+            p2.innerText = '窗口的宽度是：'+w.toString() + ' ' + '窗口的高度是:' + h.toString();
+        }
+        //屏幕的大小
+        function getScreenSize() {
+            var screenWidth = screen.availWidth
+            var screenHeigth = screen.availHeight
+            var p1 = document.getElementById('screenSize');
+            p1.innerText = '屏幕的宽度是：'+screenWidth.toString() + ' ' + '屏幕的高度是:' + screenHeigth.toString();
+        }
+    </script>
+</body>
+</html>
